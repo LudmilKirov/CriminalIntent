@@ -29,8 +29,9 @@ public class Crime {
     }
 
     public String getDate() {
-       mDate = (String) android.text.format.DateFormat.format("dd-mm-yyyy kk:mm", new Date());
-        return mDate;
+       mDate = (String) android.text.format.DateFormat
+               .format("dd\\MM\\yyyy kk:mm", new Date());
+       return mDate;
     }
 
     public void setDate(String date) {
