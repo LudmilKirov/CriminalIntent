@@ -1,5 +1,6 @@
 package com.example.criminalintent;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,9 +21,11 @@ class CrimeListFragment extends Fragment {
 
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(LayoutInflater inflater,
+                             ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_crime_list, container, false);
+        View view = inflater.inflate(R.layout.fragment_crime_list,
+                container, false);
 
         mCrimeRecyclerView = (RecyclerView) view
                 .findViewById(R.id.crime_recycler_view);
@@ -31,6 +34,13 @@ class CrimeListFragment extends Fragment {
         updateUI();
 
         return view;
+    }
+
+    //Update the RecyclerView
+    @Override
+    public void onResume(){
+        super.onResume();
+        updateUI();
     }
 
 
@@ -64,12 +74,12 @@ class CrimeListFragment extends Fragment {
             mDateTextView.setText(mCrime.getDate().toString());
             mSolvedCheckBox.setChecked(mCrime.isSolved());
         }
-
+        //when clicked
         @Override
         public void onClick(View view) {
-            Toast.makeText(getActivity(),
-                    mCrime.getTitle() + " clicked!", Toast.LENGTH_SHORT)
-                    .show();
+            //Starting a activity from a fragment
+            Intent intent = MainActivity.newIntent(getActivity(),mCrime.getID());
+            startActivity(intent);
         }
     }
 
@@ -111,9 +121,17 @@ class CrimeListFragment extends Fragment {
     private void updateUI() {
         CrimeLab crimeLab = CrimeLab.get(getActivity());
         List<Crime> crimes = crimeLab.getCrimes();
+        if(mAdapter == null) {
+            mAdapter = new CrimeAdapter(crimes);
+            mCrimeRecyclerView.setAdapter(mAdapter);
+        }
+        else {
+            mAdapter.notifyDataSetChanged();
+        }
 
-        mAdapter = new CrimeAdapter(crimes);
-        mCrimeRecyclerView.setAdapter(mAdapter);
+
     }
+
+
 
 }
