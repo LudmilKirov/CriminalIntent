@@ -78,10 +78,11 @@ class CrimeListFragment extends Fragment {
         //when clicked
         @Override
         public void onClick(View view) {
-            //Starting a activity from a fragment
-            Intent intent = MainActivity.newIntent(getActivity(),mCrime.getID());
+            //When pressing a list in CrimeListFragment
+            // to start instance of CrimePageActivity
+            Intent intent = CrimePageActivity.newIntent(getActivity(),mCrime.getID());
             //Get the position of the changed crime
-           mUpdatedPosition= this.getAdapterPosition();
+            mUpdatedPosition= this.getAdapterPosition();
             startActivity(intent);
         }
     }
