@@ -1,17 +1,19 @@
 package com.example.criminalintent;
+
 import java.util.Date;
 import java.util.UUID;
 
 public class Crime {
 
-    private  UUID mID;
+    private UUID mID;
     private String mTitle;
-    private String mDate;
+    private Date mDate;
     private boolean mSolved;
 
     //Constructor
     public Crime() {
         mID = UUID.randomUUID();
+        mDate = new Date();
     }
 
     //Getters and setters
@@ -25,16 +27,13 @@ public class Crime {
 
     public void setTitle(String title) {
         mTitle = title;
-        mDate=this.mDate;
     }
 
-    public String getDate() {
-       mDate = (String) android.text.format.DateFormat
-               .format("dd\\MM\\yyyy kk:mm", new Date());
-       return mDate;
+    public Date getDate() {
+        return mDate;
     }
 
-    public void setDate(String date) {
+    public void setDate(Date date) {
         mDate = date;
     }
 

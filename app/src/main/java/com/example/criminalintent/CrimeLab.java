@@ -8,6 +8,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+//Creat a Singleton Notice that after destroy(),
+// the data will be lost,so if want to save a
+// data for long time don't use this,but for one
+// life it is good way to pass information between controllers
 public class CrimeLab {
     private static CrimeLab sCrimeLab;
 
@@ -22,6 +26,7 @@ public class CrimeLab {
 
     private CrimeLab(Context context) {
         mCrimes = new ArrayList<>();
+        //Create 100 crimes in the list
         for (int i = 0; i < 100; i++) {
             Crime crime = new Crime();
             crime.setTitle("Crime #" + i);
@@ -29,11 +34,13 @@ public class CrimeLab {
             mCrimes.add(crime);
         }
     }
-
+    //Using a object easily can if later
+    // using different list to be changed
     public List<Crime> getCrimes() {
         return mCrimes;
     }
 
+    //Get particular crime
     public Crime getCrime(UUID id) {
         for (Crime crime : mCrimes) {
             if (crime.getID().equals(id)) {
@@ -43,4 +50,3 @@ public class CrimeLab {
         return null;
     }
 }
-

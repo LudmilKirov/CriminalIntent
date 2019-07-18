@@ -6,6 +6,9 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
 
+//Set the activity view to be inflated from activity_fragment.xml.
+// Then look for the fragment in the Fragment manager in that
+// container,creating and adding it if does not exist
 public abstract class SingleFragmentActivity extends FragmentActivity {
 
     protected abstract Fragment createFragment();

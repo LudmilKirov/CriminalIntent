@@ -58,6 +58,8 @@ public class CrimePageActivity extends FragmentActivity {
         }
     }
 
+    //Add a nweIntend method to CrimePageActivity along
+    // with an extra for the crime ID
     public static Intent newIntent(Context packageContext, UUID crimeId){
         Intent intent= new Intent(packageContext,CrimePageActivity.class);
         intent.putExtra(EXTRA_CRIME_ID,crimeId);
