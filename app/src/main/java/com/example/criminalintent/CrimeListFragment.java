@@ -13,25 +13,26 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.Date;
 import java.util.List;
 
 class CrimeListFragment extends Fragment {
     private RecyclerView mCrimeRecyclerView;
     private CrimeAdapter mAdapter;
-    private int mUpdatedPosition ;
+    private int mUpdatedPosition;
 
 
     @Override
     public View onCreateView(LayoutInflater inflater,
                              ViewGroup container,
                              Bundle savedInstanceState) {
+        //Create a view for the layout fragment_crime_list
         View view = inflater.inflate(R.layout.fragment_crime_list,
                 container, false);
-
+        //Get the id
         mCrimeRecyclerView = (RecyclerView) view
                 .findViewById(R.id.crime_recycler_view);
         mCrimeRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-
         updateUI();
 
         return view;
@@ -39,7 +40,7 @@ class CrimeListFragment extends Fragment {
 
     //Update the RecyclerView
     @Override
-    public void onResume(){
+    public void onResume() {
         super.onResume();
         updateUI();
     }
@@ -48,7 +49,7 @@ class CrimeListFragment extends Fragment {
     //Maintains a reference to a single view
     // - Text View,so te itemView must be TextView,
     // later more responsibilities
-    private class CrimeHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
+    private class CrimeHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private TextView mTitleTextView;
         private TextView mDateTextView;
         private CheckBox mSolvedCheckBox;
@@ -60,11 +61,11 @@ class CrimeListFragment extends Fragment {
         public CrimeHolder(View itemView) {
             super(itemView);
 
-
             mTitleTextView = (TextView) itemView.findViewById(R.id.list_item_crime_title_text_view);
             mDateTextView = (TextView) itemView.findViewById(R.id.list_item_crime_date_text_view);
             mSolvedCheckBox = (CheckBox) itemView.findViewById(R.id.list_item_crime_solved_check_box);
         }
+
         //Using this to reduce the time because calling
         // id's is resourceful and onBind is called more
         // often adn the work is already done
@@ -72,17 +73,20 @@ class CrimeListFragment extends Fragment {
             mCrime = crime;
             itemView.setOnClickListener(this);
             mTitleTextView.setText(mCrime.getTitle());
-            mDateTextView.setText(mCrime.getDate().toString());
+
+            CharSequence s = android.text.format.DateFormat.format("dd/MM/yy kk:mm", mCrime.getDate());
+            mDateTextView.setText(s);
             mSolvedCheckBox.setChecked(mCrime.isSolved());
         }
+
         //when clicked
         @Override
         public void onClick(View view) {
             //When pressing a list in CrimeListFragment
             // to start instance of CrimePageActivity
-            Intent intent = CrimePageActivity.newIntent(getActivity(),mCrime.getID());
+            Intent intent = CrimePageActivity.newIntent(getActivity(), mCrime.getID());
             //Get the position of the changed crime
-            mUpdatedPosition= this.getAdapterPosition();
+            mUpdatedPosition = this.getAdapterPosition();
             startActivity(intent);
         }
     }
@@ -122,19 +126,18 @@ class CrimeListFragment extends Fragment {
         }
     }
 
+    //Update the user interface
     private void updateUI() {
         CrimeLab crimeLab = CrimeLab.get(getActivity());
         List<Crime> crimes = crimeLab.getCrimes();
-        if(mAdapter == null) {
+        if (mAdapter == null) {
             mAdapter = new CrimeAdapter(crimes);
             mCrimeRecyclerView.setAdapter(mAdapter);
-        }
-        else {
+        } else {
             //Check if the user is touched one of the crimes,
             // then notify the adapter
-                mAdapter.notifyItemChanged(mUpdatedPosition);
-            }
+            mAdapter.notifyItemChanged(mUpdatedPosition);
         }
-
     }
 
+}
