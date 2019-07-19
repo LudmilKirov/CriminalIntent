@@ -1,5 +1,6 @@
 package com.example.criminalintent;
 
+import java.sql.Time;
 import java.util.Date;
 import java.util.UUID;
 
@@ -44,4 +45,5 @@ public class Crime {
     public void setSolved(boolean solved) {
         mSolved = solved;
     }
+
 }

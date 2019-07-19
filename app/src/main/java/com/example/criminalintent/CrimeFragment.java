@@ -30,10 +30,12 @@ public class CrimeFragment extends Fragment {
     private static final String DIALOG_DATE = "DialogDate";
     private static final String DIALOG_TIME = "DialogTime";
     private static final int REQUEST_DATE = 0;
+    private static final int REQUEST_TIME =0;
 
     private Crime mCrime;
     private EditText mTitleField;
     private Button mDateButton;
+    private Button mTimeButton;
     private CheckBox mSolvedCheckbox;
 
     @Override
@@ -74,10 +76,7 @@ public class CrimeFragment extends Fragment {
 
         //Create the button for the date
         mDateButton = (Button) v.findViewById(R.id.crime_date);
-        //Update the date
         updateDate();
-        //Set the button visible
-        mDateButton.setEnabled(true);
         mDateButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v1) {
@@ -88,6 +87,22 @@ public class CrimeFragment extends Fragment {
                 dialog.show(manager, DIALOG_DATE);
             }
         });
+        //Adding a button to set the time
+        mTimeButton=(Button) v.findViewById(R.id.crime_time);
+        //TODO update the time method
+        //Update the time
+        updateTime();
+        mTimeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                FragmentManager manager =CrimeFragment.this.getFragmentManager();
+                TimePickerFragment dialog=TimePickerFragment.newInstance(mCrime.getDate());
+                dialog.setTargetFragment(CrimeFragment.this,REQUEST_TIME);
+                dialog.show(manager,DIALOG_TIME);
+            }
+        });
+
+
         //Create a check box
         mSolvedCheckbox = (CheckBox) v.findViewById(R.id.crime_solved);
         //Set if the case is solved
@@ -112,13 +127,17 @@ public class CrimeFragment extends Fragment {
             mCrime.setDate(date);
             updateDate();
         }
+        if (requestCode == REQUEST_TIME) {
+            Date date = (Date) data.getSerializableExtra(TimePickerFragment.EXTRA_TIME);
+            mCrime.setDate(date);
+            updateTime();
+        }
     }
 
     //Update the date with the formatted date
     // Get format date to day,month,year
-    // and 24 format hours and minutes
     private void updateDate() {
-        CharSequence s = android.text.format.DateFormat.format("dd/MM/yy kk:mm", mCrime.getDate());
+        CharSequence s = android.text.format.DateFormat.format("dd/MM/yy", mCrime.getDate());
         mDateButton.setText(s);
     }
 
@@ -132,5 +151,10 @@ public class CrimeFragment extends Fragment {
         fragment.setArguments(args);
 
         return fragment;
+    }
+    //Update the time with the right format 24 hours and minutes
+    private void updateTime(){
+        CharSequence s = android.text.format.DateFormat.format("kk:mm", mCrime.getDate());
+        mTimeButton.setText(s);
     }
 }

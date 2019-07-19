@@ -76,6 +76,7 @@ class CrimeListFragment extends Fragment {
 
             CharSequence s = android.text.format.DateFormat.format("dd/MM/yy kk:mm", mCrime.getDate());
             mDateTextView.setText(s);
+
             mSolvedCheckBox.setChecked(mCrime.isSolved());
         }
 
