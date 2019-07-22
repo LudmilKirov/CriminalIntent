@@ -23,16 +23,13 @@ public class CrimeLab {
         }
         return sCrimeLab;
     }
+    //Add crimes to the list
+    public void addCrime(Crime c){
+        mCrimes.add(c);
+    }
 
     private CrimeLab(Context context) {
         mCrimes = new ArrayList<>();
-        //Create 100 crimes in the list
-        for (int i = 0; i < 100; i++) {
-            Crime crime = new Crime();
-            crime.setTitle("Crime #" + i);
-            crime.setSolved(i % 2 == 0);
-            mCrimes.add(crime);
-        }
     }
     //Using a object easily can if later
     // using different list to be changed
