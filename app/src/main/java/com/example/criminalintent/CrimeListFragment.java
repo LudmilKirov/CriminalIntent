@@ -22,6 +22,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 class CrimeListFragment extends Fragment {
 
@@ -131,9 +132,12 @@ class CrimeListFragment extends Fragment {
         public CrimeHolder(View itemView) {
             super(itemView);
 
-            mTitleTextView = (TextView) itemView.findViewById(R.id.list_item_crime_title_text_view);
-            mDateTextView = (TextView) itemView.findViewById(R.id.list_item_crime_date_text_view);
-            mSolvedCheckBox = (CheckBox) itemView.findViewById(R.id.list_item_crime_solved_check_box);
+            mTitleTextView =
+                    (TextView) itemView.findViewById(R.id.list_item_crime_title_text_view);
+            mDateTextView =
+                    (TextView) itemView.findViewById(R.id.list_item_crime_date_text_view);
+            mSolvedCheckBox =
+                    (CheckBox) itemView.findViewById(R.id.list_item_crime_solved_check_box);
         }
 
         //Using this to reduce the time because calling
@@ -144,7 +148,9 @@ class CrimeListFragment extends Fragment {
             itemView.setOnClickListener(this);
             mTitleTextView.setText(mCrime.getTitle());
 
-            CharSequence s = android.text.format.DateFormat.format("dd/MM/yy kk:mm", mCrime.getDate());
+            CharSequence s =
+                    android.text.format.DateFormat
+                            .format("dd/MM/yy kk:mm", mCrime.getDate());
             mDateTextView.setText(s);
 
             mSolvedCheckBox.setChecked(mCrime.isSolved());
@@ -213,18 +219,21 @@ class CrimeListFragment extends Fragment {
         // update the count of the crimes
         updateSubtitle();
     }
-
     private void updateSubtitle() {
         CrimeLab crimeLab = CrimeLab.get(getActivity());
+
         //Get the count of the crimes
         int crimeCount = crimeLab.getCrimes().size();
-        @SuppressLint("StringFormatMatches") String subtitle = getString(R.string.subtitle_format, crimeCount);
+        //Using the right format, 1 crime , 2 crimes etc
+        @SuppressLint("StringFormatMatches")
+        String subtitle = getResources().getQuantityString(R.plurals.subtitle_plural,crimeCount,crimeCount);
 
         if (!mSubtitleVisible) {
             subtitle = null;
         }
+
         AppCompatActivity activity = (AppCompatActivity) getActivity();
-        activity.getSupportActionBar().setSubtitle(subtitle);
+        Objects.requireNonNull(Objects.requireNonNull(activity).getSupportActionBar()).setSubtitle(subtitle);
     }
 
 }

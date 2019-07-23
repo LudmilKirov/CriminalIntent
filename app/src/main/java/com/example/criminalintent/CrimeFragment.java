@@ -9,8 +9,12 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Adapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.Checkable;
@@ -19,10 +23,13 @@ import android.widget.EditText;
 
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import java.text.DateFormat;
 import java.util.Date;
+import java.util.Objects;
 import java.util.UUID;
+import java.util.zip.Inflater;
 
 public class CrimeFragment extends Fragment {
 
@@ -30,7 +37,8 @@ public class CrimeFragment extends Fragment {
     private static final String DIALOG_DATE = "DialogDate";
     private static final String DIALOG_TIME = "DialogTime";
     private static final int REQUEST_DATE = 0;
-    private static final int REQUEST_TIME =0;
+    private static final int REQUEST_TIME = 0;
+
 
     private Crime mCrime;
     private EditText mTitleField;
@@ -44,7 +52,7 @@ public class CrimeFragment extends Fragment {
         //When a fragment need to access its arguments,
         // it calls the getArguments()
         // and type specific get methods of Bundle
-
+        setHasOptionsMenu(true);
         UUID crimeId = (UUID) getArguments().getSerializable(ARG_CRIME_ID);
         mCrime = CrimeLab.get(getActivity()).getCrime(crimeId);
     }
@@ -88,17 +96,17 @@ public class CrimeFragment extends Fragment {
             }
         });
         //Adding a button to set the time
-        mTimeButton=(Button) v.findViewById(R.id.crime_time);
+        mTimeButton = (Button) v.findViewById(R.id.crime_time);
         //TODO update the time method
         //Update the time
         updateTime();
         mTimeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                FragmentManager manager =CrimeFragment.this.getFragmentManager();
-                TimePickerFragment dialog=TimePickerFragment.newInstance(mCrime.getDate());
-                dialog.setTargetFragment(CrimeFragment.this,REQUEST_TIME);
-                dialog.show(manager,DIALOG_TIME);
+                FragmentManager manager = CrimeFragment.this.getFragmentManager();
+                TimePickerFragment dialog = TimePickerFragment.newInstance(mCrime.getDate());
+                dialog.setTargetFragment(CrimeFragment.this, REQUEST_TIME);
+                dialog.show(manager, DIALOG_TIME);
             }
         });
 
@@ -134,6 +142,28 @@ public class CrimeFragment extends Fragment {
         }
     }
 
+    //Create the functionality of the remove button
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.fragment_crime, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.menu_item_delete:
+                CrimeLab.get(getActivity()).deleteCrime(mCrime);
+                getActivity().finish();
+                return true;
+
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+
+    }
+
+
     //Update the date with the formatted date
     // Get format date to day,month,year
     private void updateDate() {
@@ -152,9 +182,11 @@ public class CrimeFragment extends Fragment {
 
         return fragment;
     }
+
     //Update the time with the right format 24 hours and minutes
-    private void updateTime(){
+    private void updateTime() {
         CharSequence s = android.text.format.DateFormat.format("kk:mm", mCrime.getDate());
         mTimeButton.setText(s);
     }
+
 }
