@@ -1,5 +1,6 @@
 package com.example.criminalintent;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.provider.FontRequest;
 
@@ -46,4 +47,11 @@ public class CrimeLab {
         }
         return null;
     }
-}
+    //Delete a crime
+    public void deleteCrime(Crime crime) {
+        mCrimes.remove(crime);
+    }
+
+
+
+    }
