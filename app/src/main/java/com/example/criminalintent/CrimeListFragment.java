@@ -9,6 +9,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -32,6 +33,8 @@ class CrimeListFragment extends Fragment {
     private CrimeAdapter mAdapter;
     private int mUpdatedPosition;
     private boolean mSubtitleVisible;
+    private TextView mNoCrimesTextView;
+    private Button mNoCrimesButton;
 
 
     @Override
@@ -41,6 +44,20 @@ class CrimeListFragment extends Fragment {
         //Create a view for the layout fragment_crime_list
         View view = inflater.inflate(R.layout.fragment_crime_list,
                 container, false);
+
+
+        mNoCrimesTextView = (TextView) view.findViewById(R.id.no_crimes_text_view);
+        mNoCrimesButton = (Button) view.findViewById(R.id.no_crimes_add_button);
+        mNoCrimesButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Crime crime = new Crime();
+                CrimeLab.get(CrimeListFragment.this.getActivity()).addCrime(crime);
+                Intent intent = CrimePageActivity.newIntent(CrimeListFragment.this.getActivity(), crime.getID());
+                CrimeListFragment.this.startActivity(intent);
+            }
+        });
+
         //Get the id
         mCrimeRecyclerView = (RecyclerView) view
                 .findViewById(R.id.crime_recycler_view);
@@ -207,6 +224,14 @@ class CrimeListFragment extends Fragment {
     private void updateUI() {
         CrimeLab crimeLab = CrimeLab.get(getActivity());
         List<Crime> crimes = crimeLab.getCrimes();
+
+        if (crimes.size() == 0) {
+            mNoCrimesTextView.setVisibility(View.VISIBLE);
+            mNoCrimesButton.setVisibility(View.VISIBLE);
+        } else {
+            mNoCrimesTextView.setVisibility(View.GONE);
+            mNoCrimesButton.setVisibility(View.GONE);
+        }
         if (mAdapter == null) {
             mAdapter = new CrimeAdapter(crimes);
             mCrimeRecyclerView.setAdapter(mAdapter);
