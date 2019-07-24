@@ -218,6 +218,10 @@ class CrimeListFragment extends Fragment {
         public int getItemCount() {
             return mCrimes.size();
         }
+
+        public void setCrimes(List<Crime> crimes){
+            mCrimes=crimes;
+        }
     }
 
     //Update the user interface
@@ -238,6 +242,7 @@ class CrimeListFragment extends Fragment {
         } else {
             //Check if the user is touched one of the crimes,
             // then notify the adapter
+            mAdapter.setCrimes(crimes);
             mAdapter.notifyItemChanged(mUpdatedPosition);
         }
         //When press the back button to
@@ -260,5 +265,7 @@ class CrimeListFragment extends Fragment {
         AppCompatActivity activity = (AppCompatActivity) getActivity();
         Objects.requireNonNull(Objects.requireNonNull(activity).getSupportActionBar()).setSubtitle(subtitle);
     }
+
+
 
 }

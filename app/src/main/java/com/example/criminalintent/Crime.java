@@ -13,8 +13,12 @@ public class Crime {
 
     //Constructor
     public Crime() {
-        mID = UUID.randomUUID();
-        mDate = new Date();
+        this(UUID.randomUUID());
+    }
+
+    public Crime(UUID id){
+        mID=id;
+        mDate=new Date();
     }
 
     //Getters and setters
