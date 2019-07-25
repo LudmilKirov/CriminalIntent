@@ -60,9 +60,10 @@ public class CrimeFragment extends Fragment {
     @Override
     public void onPause() {
         super.onPause();
-
+        //Update a copy of Crime
         CrimeLab.get(getActivity())
                 .updateCrime(mCrime);
+       // CrimeLab.get(getActivity()).deleteCrime(mCrime);
     }
 
     @Override
@@ -150,26 +151,26 @@ public class CrimeFragment extends Fragment {
         }
     }
 
-//    //Create the functionality of the remove button
-//    @Override
-//    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-//        super.onCreateOptionsMenu(menu, inflater);
-//        inflater.inflate(R.menu.fragment_crime, menu);
-//    }
+    //Create the functionality of the remove button
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.fragment_crime, menu);
+    }
 
-//    @Override
-//    public boolean onOptionsItemSelected(MenuItem item) {
-//        switch (item.getItemId()) {
-//            case R.id.menu_item_delete:
-//                CrimeLab.get(getActivity()).deleteCrime(mCrime);
-//                getActivity().finish();
-//                return true;
-//
-//            default:
-//                return super.onOptionsItemSelected(item);
-//        }
-//
-//    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.menu_item_delete:
+                CrimeLab.get(getActivity()).deleteCrime(mCrime);
+                getActivity().finish();
+                return true;
+
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+
+    }
 
 
     //Update the date with the formatted date

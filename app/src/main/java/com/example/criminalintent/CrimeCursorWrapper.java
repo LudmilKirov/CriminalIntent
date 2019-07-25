@@ -6,6 +6,12 @@ import android.database.CursorWrapper;
 import java.util.Date;
 import java.util.UUID;
 
+//DRY
+//Instead of writing this code each time you need
+// to read data from a Cursor,create a own Cursor
+// subclass that takes cares.Using a CursorWrapper
+// lets you wrap a Cursor you received from another
+// place and add new methods on top of it
 public class CrimeCursorWrapper extends CursorWrapper {
     public CrimeCursorWrapper(Cursor cursor) {
         super(cursor);
