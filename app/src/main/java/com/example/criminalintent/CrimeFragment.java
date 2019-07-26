@@ -26,6 +26,7 @@ import android.widget.Checkable;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 
+import androidx.core.app.ShareCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -129,14 +130,15 @@ public class CrimeFragment extends Fragment {
 
         mReportButton = (Button) v.findViewById(R.id.crime_report);
         mReportButton.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View view) {
-                Intent i = new Intent(Intent.ACTION_SEND);
-                i.setType("text/plain");
-                i.putExtra(Intent.EXTRA_TEXT,getCrimeReport());
-                i.putExtra(Intent.EXTRA_SUBJECT,
-                        getString(R.string.crime_report_subject));
-                i=Intent.createChooser(i,getString(R.string.send_report));
-                startActivity(i);
+            @Override
+            public void onClick(View v12) {
+                Intent i = ShareCompat.IntentBuilder.from(CrimeFragment.this.getActivity())
+                        .setType("text/plain")
+                        .setText(CrimeFragment.this.getCrimeReport())
+                        .setSubject(CrimeFragment.this.getString(R.string.crime_report_subject))
+                        .setChooserTitle(CrimeFragment.this.getString(R.string.send_report))
+                        .createChooserIntent();
+                CrimeFragment.this.startActivity(i);
             }
         });
 
