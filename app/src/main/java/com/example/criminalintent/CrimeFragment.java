@@ -1,6 +1,7 @@
 package com.example.criminalintent;
 
 import android.accessibilityservice.GestureDescription;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -54,6 +55,7 @@ public class CrimeFragment extends Fragment {
     private Button mReportButton;
     private Button mSuspectButton;
     private CheckBox mSolvedCheckbox;
+    private Button mCallButton;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -75,6 +77,7 @@ public class CrimeFragment extends Fragment {
        // CrimeLab.get(getActivity()).deleteCrime(mCrime);
     }
 
+    @SuppressLint("StringFormatInvalid")
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -160,6 +163,26 @@ public class CrimeFragment extends Fragment {
         if(packageManager.resolveActivity(pickContact,PackageManager.MATCH_DEFAULT_ONLY)==null){
             mSuspectButton.setEnabled(false);
         }
+
+        //Add a call button
+        mCallButton = (Button) v.findViewById(R.id.crime_call);
+        if (mCrime.getSuspect() == null) {
+            mCallButton.setEnabled(false);
+            mCallButton.setText(R.string.call_suspect);
+        } else {
+            mCallButton.setText(getString(R.string.crime_call_text, mCrime.getSuspect()));
+        }
+        mCallButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v1) {
+                if (mCrime.getSuspectNumber() != null) {
+                    Intent intent = new Intent(Intent.ACTION_DIAL,
+                            Uri.parse("tel:" + mCrime.getSuspectNumber()));
+                    CrimeFragment.this.startActivity(intent);
+                }
+            }
+        });
+
         //Create a check box
         mSolvedCheckbox = (CheckBox) v.findViewById(R.id.crime_solved);
         //Set if the case is solved

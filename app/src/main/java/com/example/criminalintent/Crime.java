@@ -11,6 +11,7 @@ public class Crime {
     private Date mDate;
     private boolean mSolved;
     private String mSuspect;
+    private String mNumber;
 
     //Constructor
     public Crime() {
@@ -57,5 +58,13 @@ public class Crime {
 
     public void setSuspect(String suspect) {
         mSuspect = suspect;
+    }
+
+    public String getSuspectNumber() {
+        return mNumber;
+    }
+
+    public void setSuspectNumber(String number) {
+        mNumber = number;
     }
 }

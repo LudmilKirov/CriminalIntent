@@ -27,6 +27,8 @@
     <string name="crime_report_suspect">The suspect is %s.</string>
     <string name="crime_report_subject">Criminal Intent Crime Report</string>
     <string name="send_report">Send crime report via</string>
+    <string name="crime_call_text">Call</string>
+    <string name="call_suspect">Call</string>
 
     <plurals name="subtitle_plural">
         <item quantity="one">%1$s crime</item>
