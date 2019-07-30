@@ -4,11 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
     <include layout="@layout/view_camera_and_title" />
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/crime_title_label"
-        style="?android:listSeparatorTextViewStyle"/>
+
 
 
     <TextView
@@ -56,6 +52,8 @@
         android:id="@+id/crime_call"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginRight="16dp"
+        android:layout_marginLeft="16dp"
         android:text="@string/crime_call_text"
         />
 
