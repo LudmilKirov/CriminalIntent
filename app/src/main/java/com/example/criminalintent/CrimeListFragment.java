@@ -9,10 +9,13 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
+import android.view.ScaleGestureDetector;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -40,6 +43,7 @@ class CrimeListFragment extends Fragment {
     private TextView mNoCrimesTextView;
     private Button mNoCrimesButton;
     private Callbacks mCallbacks;
+
 
 
     @Override
@@ -292,6 +296,5 @@ class CrimeListFragment extends Fragment {
     public interface Callbacks{
         void onCrimeSelectred(Crime crime);
     }
-
 
 }

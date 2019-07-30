@@ -3,6 +3,8 @@ package com.example.criminalintent;
 import android.accessibilityservice.GestureDescription;
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -21,8 +23,12 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
+import android.view.ScaleGestureDetector;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Adapter;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -67,6 +73,7 @@ public class CrimeFragment extends Fragment {
     private ImageView mPhotoView;
     private File mPhotoFile;
     private Callbacks mCallbacks;
+    private static final String DIALOG_PHOTO = "DialogPhoto";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -74,10 +81,12 @@ public class CrimeFragment extends Fragment {
         //When a fragment need to access its arguments,
         // it calls the getArguments()
         // and type specific get methods of Bundle
+
         setHasOptionsMenu(true);
         UUID crimeId = (UUID) getArguments().getSerializable(ARG_CRIME_ID);
         mCrime = CrimeLab.get(getActivity()).getCrime(crimeId);
         mPhotoFile = CrimeLab.get(getActivity()).getPhotoFile(mCrime);
+
     }
 
     @Override
@@ -95,6 +104,7 @@ public class CrimeFragment extends Fragment {
                              Bundle savedInstanceState) {
         //When create run fragment_crime.xml
         View v = inflater.inflate(R.layout.fragment_crime, container, false);
+
         //Set the title
         mTitleField = (EditText) v.findViewById(R.id.crime_title);
         mTitleField.setText(mCrime.getTitle());
@@ -208,6 +218,7 @@ public class CrimeFragment extends Fragment {
             }
         });
 
+        //Create a photo button,when press pop the camera.
         mPhotoButton = (ImageButton) v.findViewById(R.id.crime_camera);
         final Intent captureImage = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 
@@ -227,8 +238,18 @@ public class CrimeFragment extends Fragment {
             }
         });
 
+        //When clicked the photo zoom in
         mPhotoView = (ImageView) v.findViewById(R.id.crime_photo);
+        mPhotoView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v){
+                FragmentManager manager = getFragmentManager();
+                ImageFragment dialog = ImageFragment.newInstance(mPhotoFile.getPath());
+                dialog.show(manager, "IMAGE_VIEWER");
+            }
+        });
         updatePhotoView();
+
 
         return v;
     }

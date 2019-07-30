@@ -6,6 +6,8 @@ import android.graphics.BitmapFactory;
 import android.graphics.Point;
 
 public class PictureUtils {
+
+    //To synchronize the photo
     public static Bitmap getScaledBitmap(String path, Activity activity) {
         Point size = new Point();
         activity.getWindowManager().getDefaultDisplay()
@@ -37,4 +39,6 @@ public class PictureUtils {
 
         return BitmapFactory.decodeFile(path, options);
     }
+
+
 }
