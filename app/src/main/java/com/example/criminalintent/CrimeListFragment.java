@@ -1,6 +1,8 @@
 package com.example.criminalintent;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -25,6 +27,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
+import javax.security.auth.callback.Callback;
+
 class CrimeListFragment extends Fragment {
 
     private static final String SAVED_SUBTITLE_VISIBLE="subtitle";
@@ -35,6 +39,7 @@ class CrimeListFragment extends Fragment {
     private boolean mSubtitleVisible;
     private TextView mNoCrimesTextView;
     private Button mNoCrimesButton;
+    private Callbacks mCallbacks;
 
 
     @Override
@@ -111,8 +116,8 @@ class CrimeListFragment extends Fragment {
             case R.id.menu_item_new_crime:
                 Crime crime = new Crime();
                 CrimeLab.get(getActivity()).addCrime(crime);
-                Intent intent = CrimePageActivity.newIntent(getActivity(), crime.getID());
-                startActivity(intent);
+               updateUI();
+               mCallbacks.onCrimeSelectred(crime);
                 return true;
             //Show the crimes,and after add a new update
             case R.id.menu_item_show_subtitle:
@@ -132,6 +137,21 @@ class CrimeListFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+
+        if (context instanceof Activity){
+            mCallbacks= (Callbacks) context;
+        }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mCallbacks=null;
     }
 
     //Maintains a reference to a single view
@@ -176,12 +196,13 @@ class CrimeListFragment extends Fragment {
         //when clicked
         @Override
         public void onClick(View view) {
-            //When pressing a list in CrimeListFragment
-            // to start instance of CrimePageActivity
-            Intent intent = CrimePageActivity.newIntent(getActivity(), mCrime.getID());
-            //Get the position of the changed crime
+//            //When pressing a list in CrimeListFragment
+//            // to start instance of CrimePageActivity
+//            Intent intent = CrimePageActivity.newIntent(getActivity(), mCrime.getID());
+//            //Get the position of the changed crime
+            mCallbacks.onCrimeSelectred(mCrime);
             mUpdatedPosition = this.getAdapterPosition();
-            startActivity(intent);
+//            startActivity(intent);
         }
     }
 
@@ -225,7 +246,7 @@ class CrimeListFragment extends Fragment {
     }
 
     //Update the user interface
-    private void updateUI() {
+    public void updateUI() {
         CrimeLab crimeLab = CrimeLab.get(getActivity());
         List<Crime> crimes = crimeLab.getCrimes();
 
@@ -266,6 +287,11 @@ class CrimeListFragment extends Fragment {
         Objects.requireNonNull(Objects.requireNonNull(activity).getSupportActionBar()).setSubtitle(subtitle);
     }
 
+    //Required interface for hosting activities.
+
+    public interface Callbacks{
+        void onCrimeSelectred(Crime crime);
+    }
 
 
 }

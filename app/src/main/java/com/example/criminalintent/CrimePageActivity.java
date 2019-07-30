@@ -14,7 +14,7 @@ import androidx.viewpager.widget.ViewPager;
 import java.util.List;
 import java.util.UUID;
 
-public class CrimePageActivity extends AppCompatActivity {
+public class CrimePageActivity extends AppCompatActivity implements CrimeFragment.Callbacks{
 
     private static final String EXTRA_CRIME_ID="com.example.criminalintent";
 
@@ -65,5 +65,10 @@ public class CrimePageActivity extends AppCompatActivity {
         Intent intent= new Intent(packageContext,CrimePageActivity.class);
         intent.putExtra(EXTRA_CRIME_ID,crimeId);
         return intent;
+    }
+
+    @Override
+    public void onCrimeUpdated(Crime crime) {
+
     }
 }

@@ -3,6 +3,7 @@ package com.example.criminalintent;
 import android.accessibilityservice.GestureDescription;
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -65,6 +66,7 @@ public class CrimeFragment extends Fragment {
     private ImageButton mPhotoButton;
     private ImageView mPhotoView;
     private File mPhotoFile;
+    private Callbacks mCallbacks;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -105,6 +107,7 @@ public class CrimeFragment extends Fragment {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 mCrime.setTitle(s.toString());
+                updateCrime();
             }
 
             @Override
@@ -201,6 +204,7 @@ public class CrimeFragment extends Fragment {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 mCrime.setSolved(isChecked);
+                updateCrime();
             }
         });
 
@@ -230,6 +234,8 @@ public class CrimeFragment extends Fragment {
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+
         if (resultCode != Activity.RESULT_OK) {
             return;
         }
@@ -237,11 +243,13 @@ public class CrimeFragment extends Fragment {
         if (requestCode == REQUEST_DATE) {
             Date date = (Date) data.getSerializableExtra(DatePickerFragment.EXTRA_DATE);
             mCrime.setDate(date);
+            updateCrime();
             updateDate();
         }
         if (requestCode == REQUEST_TIME) {
             Date date = (Date) data.getSerializableExtra(TimePickerFragment.EXTRA_TIME);
             mCrime.setDate(date);
+            updateCrime();
             updateTime();
         }
         else if(requestCode == REQUEST_CONTACT && data != null){
@@ -263,11 +271,13 @@ public class CrimeFragment extends Fragment {
                     return;
                 }
 
+
                 //Pull out the first column of the first
                 // row of data - that is your suspect's name.
                 c.moveToFirst();
                 String suspect = c.getString(0);
                 mCrime.setSuspect(suspect);
+                updateCrime();
                 mSuspectButton.setText(suspect);
             }
             finally {
@@ -275,6 +285,7 @@ public class CrimeFragment extends Fragment {
             }
         }
     else if (requestCode == REQUEST_PHOTO) {
+        updateCrime();
         updatePhotoView();
     }
     }
@@ -299,6 +310,22 @@ public class CrimeFragment extends Fragment {
         }
 
     }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+
+        if (context instanceof Activity){
+            mCallbacks= (Callbacks) context;
+        }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mCallbacks=null;
+    }
+
 
 
     //Update the date with the formatted date
@@ -360,5 +387,16 @@ public class CrimeFragment extends Fragment {
             mPhotoView.setImageBitmap(bitmap);
         }
     }
+
+    //Required interface for hosting activities.
+
+    public interface Callbacks{
+        void onCrimeUpdated(Crime crime);
+    }
+    private void updateCrime(){
+        CrimeLab.get(getActivity()).updateCrime(mCrime);
+        mCallbacks.onCrimeUpdated(mCrime);
+    }
+
 
 }
