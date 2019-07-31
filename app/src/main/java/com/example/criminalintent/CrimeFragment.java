@@ -13,12 +13,14 @@ import android.graphics.Bitmap;
 import android.icu.text.SimpleDateFormat;
 import android.icu.util.Calendar;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.text.format.DateFormat;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -27,6 +29,7 @@ import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Adapter;
@@ -50,11 +53,14 @@ import java.util.Objects;
 import java.util.UUID;
 import java.util.zip.Inflater;
 
+import static android.content.ContentValues.TAG;
+
 public class CrimeFragment extends Fragment {
 
     private static final String ARG_CRIME_ID = "crime_id";
     private static final String DIALOG_DATE = "DialogDate";
     private static final String DIALOG_TIME = "DialogTime";
+
     private static final int REQUEST_DATE = 0;
     private static final int REQUEST_TIME = 0;
     private static final int REQUEST_CONTACT=1;
@@ -67,13 +73,15 @@ public class CrimeFragment extends Fragment {
     private Button mTimeButton;
     private Button mReportButton;
     private Button mSuspectButton;
-    private CheckBox mSolvedCheckbox;
     private Button mCallButton;
     private ImageButton mPhotoButton;
     private ImageView mPhotoView;
+    private CheckBox mSolvedCheckbox;
     private File mPhotoFile;
     private Callbacks mCallbacks;
-    private static final String DIALOG_PHOTO = "DialogPhoto";
+
+
+    private int imageWidth, imageHeight;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -240,6 +248,31 @@ public class CrimeFragment extends Fragment {
 
         //When clicked the photo zoom in
         mPhotoView = (ImageView) v.findViewById(R.id.crime_photo);
+
+        ViewTreeObserver observer = mPhotoView.getViewTreeObserver();
+        observer.addOnGlobalLayoutListener
+                (new ViewTreeObserver.OnGlobalLayoutListener() {
+            // Interface definition for a callback to
+            // be invoked when the global layout state
+            // or the visibility of views within the view tree changes.
+            // Therefore it's a good idea to deregister the
+            // observer after the first pass happens.
+            // It would be interesting, though, to know why
+            // we see the following logged lines twice.
+            @Override
+            public void onGlobalLayout() {
+                imageWidth = mPhotoView.getMeasuredWidth();
+                imageHeight = mPhotoView.getMeasuredHeight();
+
+                Log.d(TAG, "Image width: " + imageWidth);
+                Log.d(TAG, "Image height: " + imageHeight);
+
+                mPhotoView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+
+                updatePhotoView(imageWidth, imageHeight);
+            }
+        });
+
         mPhotoView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v){
@@ -248,7 +281,7 @@ public class CrimeFragment extends Fragment {
                 dialog.show(manager, "IMAGE_VIEWER");
             }
         });
-        updatePhotoView();
+        updatePhotoView(imageWidth, imageHeight);
 
 
         return v;
@@ -307,7 +340,7 @@ public class CrimeFragment extends Fragment {
         }
     else if (requestCode == REQUEST_PHOTO) {
         updateCrime();
-        updatePhotoView();
+        updatePhotoView(imageWidth, imageHeight);
     }
     }
 
@@ -399,21 +432,22 @@ public class CrimeFragment extends Fragment {
         return report;
     }
 
-    private void updatePhotoView() {
+    private void updatePhotoView(int imageWidth, int imageHeight) {
         if (mPhotoFile == null || !mPhotoFile.exists()) {
             mPhotoView.setImageDrawable(null);
         } else {
             Bitmap bitmap = PictureUtils.getScaledBitmap(
-                    mPhotoFile.getPath(), getActivity());
+                    mPhotoFile.getPath(), imageWidth, imageHeight
+            );
             mPhotoView.setImageBitmap(bitmap);
         }
     }
 
     //Required interface for hosting activities.
-
     public interface Callbacks{
         void onCrimeUpdated(Crime crime);
     }
+
     private void updateCrime(){
         CrimeLab.get(getActivity()).updateCrime(mCrime);
         mCallbacks.onCrimeUpdated(mCrime);
