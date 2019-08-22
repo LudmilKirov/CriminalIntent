@@ -35,7 +35,7 @@ public class TimePickerFragment extends DialogFragment {
     // integers for the month,date and year.So you need to
     // create a Calendar object and use the Date to configure
     // the Calendar.Then initialize the DatePicker.
-    public Dialog onCreateDialog( Bundle savedInstanceState) {
+    public Dialog onCreateDialog(Bundle savedInstanceState) {
         mDate = (Date) getArguments().getSerializable(ARG_TIME);
 
         Calendar calendar = Calendar.getInstance();
@@ -103,5 +103,4 @@ public class TimePickerFragment extends DialogFragment {
         getTargetFragment()
                 .onActivityResult(getTargetRequestCode(), resultCode, intent);
     }
-
 }

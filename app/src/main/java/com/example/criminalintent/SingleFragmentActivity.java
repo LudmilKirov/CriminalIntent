@@ -12,7 +12,6 @@ import androidx.fragment.app.FragmentManager;
 // Then look for the fragment in the Fragment manager in that
 // container,creating and adding it if does not exist
 public abstract class SingleFragmentActivity extends AppCompatActivity {
-
     protected abstract Fragment createFragment();
 
     @LayoutRes
@@ -34,5 +33,4 @@ public abstract class SingleFragmentActivity extends AppCompatActivity {
                     .commit();
         }
     }
-
 }

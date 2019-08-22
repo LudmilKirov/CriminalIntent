@@ -33,12 +33,9 @@ public class PictureUtils {
                 inSampleSize = Math.round(srcWidth / destWidth);
             }
         }
-
         options = new BitmapFactory.Options();
         options.inSampleSize = inSampleSize;
 
         return BitmapFactory.decodeFile(path, options);
     }
-
-
 }

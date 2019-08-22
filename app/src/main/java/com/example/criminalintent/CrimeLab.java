@@ -35,14 +35,11 @@ public class CrimeLab {
     public void addCrime(Crime c) {
         ContentValues values = getContentValues(c);
         mDatabase.insert(CrimeTable.NAME, null, values);
-
     }
 
     private CrimeLab(Context context) {
-
         mContext = context.getApplicationContext();
         mDatabase = new CrimeBaseHelper(mContext).getWritableDatabase();
-
     }
 
     //Using a object easily can if later
@@ -111,7 +108,7 @@ public class CrimeLab {
         values.put(CrimeTable.Cols.TITLE, crime.getTitle());
         values.put(CrimeTable.Cols.DATE, crime.getDate().getTime());
         values.put(CrimeTable.Cols.SOLVED, crime.isSolved() ? 1 : 0);
-        values.put(CrimeTable.Cols.SUSPECT,crime.getSuspect());
+        values.put(CrimeTable.Cols.SUSPECT, crime.getSuspect());
 
         return values;
     }
@@ -140,5 +137,4 @@ public class CrimeLab {
 
         return new File(externalFilesDir, crime.getPhotoFilename());
     }
-
 }

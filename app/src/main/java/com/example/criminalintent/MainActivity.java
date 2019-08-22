@@ -12,16 +12,16 @@ import android.os.Bundle;
 import java.util.UUID;
 
 public class MainActivity extends SingleFragmentActivity {
-
     private static final String EXTRA_CRIME_ID = "com.example.criminalintent.crime_id";
+
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
     }
+
     //Call newInstance when need to create new CrimeFragment
     @Override
     protected Fragment createFragment() {
-
         UUID crimeId = (UUID) getIntent().getSerializableExtra(EXTRA_CRIME_ID);
 
         return CrimeFragment.newInstance(crimeId);

@@ -6,10 +6,10 @@ import android.content.Intent;
 import androidx.fragment.app.Fragment;
 
 import java.util.Date;
+
 //In this way if the target fragment does not exist,
 // the hosting activity to send the date back to the fragment
 public class DatePickerActivity extends SingleFragmentActivity {
-
     private static final String EXTRA_DATE = "extra_date";
 
     @Override

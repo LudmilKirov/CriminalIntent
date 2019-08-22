@@ -2,7 +2,6 @@ package com.example.criminalintent;
 
 public class CrimeDbSchema {
     public static final class CrimeTable{
-
         public static final String NAME="crimes";
 
         //Inner class that describes the table
