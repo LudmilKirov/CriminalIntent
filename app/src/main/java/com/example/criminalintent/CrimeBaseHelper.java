@@ -15,10 +15,10 @@ public class CrimeBaseHelper extends SQLiteOpenHelper {
     public CrimeBaseHelper(Context context){
         super(context,DATABASE_NAME,null,VERSION);
     }
+
     //Create the database
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
-
         sqLiteDatabase.execSQL("create table "
                         + CrimeTable.NAME
                         + "("
@@ -33,6 +33,5 @@ public class CrimeBaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int oldVersion, int newVersion) {
-
     }
 }

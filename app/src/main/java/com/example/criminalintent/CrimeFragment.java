@@ -56,16 +56,14 @@ import java.util.zip.Inflater;
 import static android.content.ContentValues.TAG;
 
 public class CrimeFragment extends Fragment {
-
     private static final String ARG_CRIME_ID = "crime_id";
     private static final String DIALOG_DATE = "DialogDate";
     private static final String DIALOG_TIME = "DialogTime";
 
     private static final int REQUEST_DATE = 0;
     private static final int REQUEST_TIME = 0;
-    private static final int REQUEST_CONTACT=1;
-    private static final int REQUEST_PHOTO= 2;
-
+    private static final int REQUEST_CONTACT = 1;
+    private static final int REQUEST_PHOTO = 2;
 
     private Crime mCrime;
     private EditText mTitleField;
@@ -80,7 +78,6 @@ public class CrimeFragment extends Fragment {
     private File mPhotoFile;
     private Callbacks mCallbacks;
 
-
     private int imageWidth, imageHeight;
 
     @Override
@@ -94,7 +91,6 @@ public class CrimeFragment extends Fragment {
         UUID crimeId = (UUID) getArguments().getSerializable(ARG_CRIME_ID);
         mCrime = CrimeLab.get(getActivity()).getCrime(crimeId);
         mPhotoFile = CrimeLab.get(getActivity()).getPhotoFile(mCrime);
-
     }
 
     @Override
@@ -147,6 +143,7 @@ public class CrimeFragment extends Fragment {
                 dialog.show(manager, DIALOG_DATE);
             }
         });
+
         //Adding a button to set the time
         mTimeButton = (Button) v.findViewById(R.id.crime_time);
         //TODO update the time method
@@ -178,20 +175,20 @@ public class CrimeFragment extends Fragment {
 
         final Intent pickContact = new Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI);
         // pickContact.addCategory(Intent.CATEGORY_HOME);
-        mSuspectButton=(Button) v.findViewById(R.id.crime_suspect);
+        mSuspectButton = (Button) v.findViewById(R.id.crime_suspect);
         mSuspectButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivityForResult(pickContact,REQUEST_CONTACT);
+                startActivityForResult(pickContact, REQUEST_CONTACT);
             }
         });
 
-        if(mCrime.getSuspect() != null){
+        if (mCrime.getSuspect() != null) {
             mSuspectButton.setText(mCrime.getSuspect());
         }
 
         PackageManager packageManager = getActivity().getPackageManager();
-        if(packageManager.resolveActivity(pickContact,PackageManager.MATCH_DEFAULT_ONLY)==null){
+        if (packageManager.resolveActivity(pickContact, PackageManager.MATCH_DEFAULT_ONLY) == null) {
             mSuspectButton.setEnabled(false);
         }
 
@@ -252,30 +249,30 @@ public class CrimeFragment extends Fragment {
         ViewTreeObserver observer = mPhotoView.getViewTreeObserver();
         observer.addOnGlobalLayoutListener
                 (new ViewTreeObserver.OnGlobalLayoutListener() {
-            // Interface definition for a callback to
-            // be invoked when the global layout state
-            // or the visibility of views within the view tree changes.
-            // Therefore it's a good idea to deregister the
-            // observer after the first pass happens.
-            // It would be interesting, though, to know why
-            // we see the following logged lines twice.
-            @Override
-            public void onGlobalLayout() {
-                imageWidth = mPhotoView.getMeasuredWidth();
-                imageHeight = mPhotoView.getMeasuredHeight();
+                    // Interface definition for a callback to
+                    // be invoked when the global layout state
+                    // or the visibility of views within the view tree changes.
+                    // Therefore it's a good idea to deregister the
+                    // observer after the first pass happens.
+                    // It would be interesting, though, to know why
+                    // we see the following logged lines twice.
+                    @Override
+                    public void onGlobalLayout() {
+                        imageWidth = mPhotoView.getMeasuredWidth();
+                        imageHeight = mPhotoView.getMeasuredHeight();
 
-                Log.d(TAG, "Image width: " + imageWidth);
-                Log.d(TAG, "Image height: " + imageHeight);
+                        Log.d(TAG, "Image width: " + imageWidth);
+                        Log.d(TAG, "Image height: " + imageHeight);
 
-                mPhotoView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                        mPhotoView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
 
-                updatePhotoView(imageWidth, imageHeight);
-            }
-        });
+                        updatePhotoView(imageWidth, imageHeight);
+                    }
+                });
 
         mPhotoView.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v){
+            public void onClick(View v) {
                 FragmentManager manager = getFragmentManager();
                 ImageFragment dialog = ImageFragment.newInstance(mPhotoFile.getPath());
                 dialog.show(manager, "IMAGE_VIEWER");
@@ -283,16 +280,14 @@ public class CrimeFragment extends Fragment {
         });
         updatePhotoView(imageWidth, imageHeight);
 
-
         return v;
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-
-
         if (resultCode != Activity.RESULT_OK) {
             return;
         }
+
         //Updating the date
         if (requestCode == REQUEST_DATE) {
             Date date = (Date) data.getSerializableExtra(DatePickerFragment.EXTRA_DATE);
@@ -305,26 +300,24 @@ public class CrimeFragment extends Fragment {
             mCrime.setDate(date);
             updateCrime();
             updateTime();
-        }
-        else if(requestCode == REQUEST_CONTACT && data != null){
+        } else if (requestCode == REQUEST_CONTACT && data != null) {
             Uri contactUri = data.getData();
-            //Specify which fields you want your query to return values for.
 
+            //Specify which fields you want your query to return values for.
             String[] queryFields = new String[]{
                     ContactsContract.Contacts.DISPLAY_NAME
             };
 
             //Perform your query - the contractURi is like a "where" clause here
+            Cursor c = getActivity()
+                    .getContentResolver()
+                    .query(contactUri, queryFields, null, null, null);
 
-            Cursor c = getActivity().getContentResolver().query(contactUri,queryFields,null,null
-                    ,null);
-
-            try{
+            try {
                 //Double-check that you actually got results
-                if(c.getCount() == 0){
+                if (c.getCount() == 0) {
                     return;
                 }
-
 
                 //Pull out the first column of the first
                 // row of data - that is your suspect's name.
@@ -333,15 +326,13 @@ public class CrimeFragment extends Fragment {
                 mCrime.setSuspect(suspect);
                 updateCrime();
                 mSuspectButton.setText(suspect);
-            }
-            finally {
+            } finally {
                 c.close();
             }
+        } else if (requestCode == REQUEST_PHOTO) {
+            updateCrime();
+            updatePhotoView(imageWidth, imageHeight);
         }
-    else if (requestCode == REQUEST_PHOTO) {
-        updateCrime();
-        updatePhotoView(imageWidth, imageHeight);
-    }
     }
 
     //Create the functionality of the remove button
@@ -358,29 +349,25 @@ public class CrimeFragment extends Fragment {
                 CrimeLab.get(getActivity()).deleteCrime(mCrime);
                 getActivity().finish();
                 return true;
-
             default:
                 return super.onOptionsItemSelected(item);
         }
-
     }
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
 
-        if (context instanceof Activity){
-            mCallbacks= (Callbacks) context;
+        if (context instanceof Activity) {
+            mCallbacks = (Callbacks) context;
         }
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
-        mCallbacks=null;
+        mCallbacks = null;
     }
-
-
 
     //Update the date with the formatted date
     // Get format date to day,month,year
@@ -407,27 +394,24 @@ public class CrimeFragment extends Fragment {
         mTimeButton.setText(s);
     }
 
-    private String getCrimeReport(){
-        String solvedString = null;
+    private String getCrimeReport() {
+        String solvedString;
 
-        if(mCrime.isSolved()){
-            solvedString=getString(R.string.crime_report_solved);
-        }
-        else{
-            solvedString=getString(R.string.crime_report_unsolved);
+        if (mCrime.isSolved()) {
+            solvedString = getString(R.string.crime_report_solved);
+        } else {
+            solvedString = getString(R.string.crime_report_unsolved);
         }
 
         CharSequence s = android.text.format.DateFormat.format("kk:mm", mCrime.getDate());
 
         String suspect = mCrime.getSuspect();
-        if(suspect == null){
+        if (suspect == null) {
             suspect = getString(R.string.crime_report_no_suspect);
+        } else {
+            suspect = getString(R.string.crime_report_suspect, suspect);
         }
-        else{
-            suspect = getString(R.string.crime_report_suspect,suspect);
-        }
-
-        String report = getString(R.string.crime_report,mCrime.getTitle(),s,solvedString,suspect);
+        String report = getString(R.string.crime_report, mCrime.getTitle(), s, solvedString, suspect);
 
         return report;
     }
@@ -444,14 +428,12 @@ public class CrimeFragment extends Fragment {
     }
 
     //Required interface for hosting activities.
-    public interface Callbacks{
+    public interface Callbacks {
         void onCrimeUpdated(Crime crime);
     }
 
-    private void updateCrime(){
+    private void updateCrime() {
         CrimeLab.get(getActivity()).updateCrime(mCrime);
         mCallbacks.onCrimeUpdated(mCrime);
     }
-
-
 }

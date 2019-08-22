@@ -34,17 +34,16 @@ import javax.security.auth.callback.Callback;
 
 class CrimeListFragment extends Fragment {
 
-    private static final String SAVED_SUBTITLE_VISIBLE="subtitle";
+    private static final String SAVED_SUBTITLE_VISIBLE = "subtitle";
 
     private RecyclerView mCrimeRecyclerView;
     private CrimeAdapter mAdapter;
-    private int mUpdatedPosition;
-    private boolean mSubtitleVisible;
     private TextView mNoCrimesTextView;
     private Button mNoCrimesButton;
     private Callbacks mCallbacks;
 
-
+    private int mUpdatedPosition;
+    private boolean mSubtitleVisible;
 
     @Override
     public View onCreateView(LayoutInflater inflater,
@@ -54,7 +53,6 @@ class CrimeListFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_crime_list,
                 container, false);
 
-
         mNoCrimesTextView = (TextView) view.findViewById(R.id.no_crimes_text_view);
         mNoCrimesButton = (Button) view.findViewById(R.id.no_crimes_add_button);
         mNoCrimesButton.setOnClickListener(new View.OnClickListener() {
@@ -62,7 +60,8 @@ class CrimeListFragment extends Fragment {
             public void onClick(View v) {
                 Crime crime = new Crime();
                 CrimeLab.get(CrimeListFragment.this.getActivity()).addCrime(crime);
-                Intent intent = CrimePageActivity.newIntent(CrimeListFragment.this.getActivity(), crime.getID());
+                Intent intent = CrimePageActivity
+                        .newIntent(CrimeListFragment.this.getActivity(), crime.getID());
                 CrimeListFragment.this.startActivity(intent);
             }
         });
@@ -73,8 +72,8 @@ class CrimeListFragment extends Fragment {
         mCrimeRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
         //To save the value of the subtitle if rotate
-        if(savedInstanceState != null){
-            mSubtitleVisible=savedInstanceState.getBoolean(SAVED_SUBTITLE_VISIBLE);
+        if (savedInstanceState != null) {
+            mSubtitleVisible = savedInstanceState.getBoolean(SAVED_SUBTITLE_VISIBLE);
         }
         updateUI();
 
@@ -85,7 +84,7 @@ class CrimeListFragment extends Fragment {
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putBoolean(SAVED_SUBTITLE_VISIBLE,mSubtitleVisible);
+        outState.putBoolean(SAVED_SUBTITLE_VISIBLE, mSubtitleVisible);
     }
 
     //Update the RecyclerView
@@ -120,8 +119,9 @@ class CrimeListFragment extends Fragment {
             case R.id.menu_item_new_crime:
                 Crime crime = new Crime();
                 CrimeLab.get(getActivity()).addCrime(crime);
-               updateUI();
-               mCallbacks.onCrimeSelectred(crime);
+
+                updateUI();
+                mCallbacks.onCrimeSelectred(crime);
                 return true;
             //Show the crimes,and after add a new update
             case R.id.menu_item_show_subtitle:
@@ -132,7 +132,6 @@ class CrimeListFragment extends Fragment {
             default:
                 return super.onOptionsItemSelected(item);
         }
-
     }
 
     //Tell the fragment manager that your fragment
@@ -147,15 +146,15 @@ class CrimeListFragment extends Fragment {
     public void onAttach(Context context) {
         super.onAttach(context);
 
-        if (context instanceof Activity){
-            mCallbacks= (Callbacks) context;
+        if (context instanceof Activity) {
+            mCallbacks = (Callbacks) context;
         }
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
-        mCallbacks=null;
+        mCallbacks = null;
     }
 
     //Maintains a reference to a single view
@@ -200,19 +199,18 @@ class CrimeListFragment extends Fragment {
         //when clicked
         @Override
         public void onClick(View view) {
-//            //When pressing a list in CrimeListFragment
-//            // to start instance of CrimePageActivity
-//            Intent intent = CrimePageActivity.newIntent(getActivity(), mCrime.getID());
-//            //Get the position of the changed crime
+           //When pressing a list in CrimeListFragment
+           // to start instance of CrimePageActivity
+           //Intent intent = CrimePageActivity.newIntent(getActivity(), mCrime.getID());
+           //Get the position of the changed crime
             mCallbacks.onCrimeSelectred(mCrime);
             mUpdatedPosition = this.getAdapterPosition();
-//            startActivity(intent);
+            //startActivity(intent);
         }
     }
 
     //With the ViewHolder defined,create the adapter
     private class CrimeAdapter extends RecyclerView.Adapter<CrimeHolder> {
-
         private List<Crime> mCrimes;
 
         public CrimeAdapter(List<Crime> crimes) {
@@ -221,13 +219,14 @@ class CrimeListFragment extends Fragment {
 
         //Called by the RecyclerView when it
         // need a new View to display an item
-
         @Override
         public CrimeHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             LayoutInflater layoutInflater = LayoutInflater.from(getActivity());
             //The view use a layout which contains
             // single TextView,styled to look nice as list
-            View view = layoutInflater.inflate(R.layout.list_item_crime, parent, false);
+            View view = layoutInflater
+                    .inflate(R.layout.list_item_crime, parent, false);
+
             return new CrimeHolder(view);
         }
 
@@ -244,8 +243,8 @@ class CrimeListFragment extends Fragment {
             return mCrimes.size();
         }
 
-        public void setCrimes(List<Crime> crimes){
-            mCrimes=crimes;
+        public void setCrimes(List<Crime> crimes) {
+            mCrimes = crimes;
         }
     }
 
@@ -254,6 +253,8 @@ class CrimeListFragment extends Fragment {
         CrimeLab crimeLab = CrimeLab.get(getActivity());
         List<Crime> crimes = crimeLab.getCrimes();
 
+        //If crimes are 0,show to the user that there
+        // are no crimes and add a option to add a crime
         if (crimes.size() == 0) {
             mNoCrimesTextView.setVisibility(View.VISIBLE);
             mNoCrimesButton.setVisibility(View.VISIBLE);
@@ -274,6 +275,7 @@ class CrimeListFragment extends Fragment {
         // update the count of the crimes
         updateSubtitle();
     }
+
     private void updateSubtitle() {
         CrimeLab crimeLab = CrimeLab.get(getActivity());
 
@@ -281,7 +283,7 @@ class CrimeListFragment extends Fragment {
         int crimeCount = crimeLab.getCrimes().size();
         //Using the right format, 1 crime , 2 crimes etc
         @SuppressLint("StringFormatMatches")
-        String subtitle = getResources().getQuantityString(R.plurals.subtitle_plural,crimeCount,crimeCount);
+        String subtitle = getResources().getQuantityString(R.plurals.subtitle_plural, crimeCount, crimeCount);
 
         if (!mSubtitleVisible) {
             subtitle = null;
@@ -292,9 +294,7 @@ class CrimeListFragment extends Fragment {
     }
 
     //Required interface for hosting activities.
-
-    public interface Callbacks{
+    public interface Callbacks {
         void onCrimeSelectred(Crime crime);
     }
-
 }

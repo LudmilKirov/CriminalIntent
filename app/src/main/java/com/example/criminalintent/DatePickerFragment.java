@@ -29,7 +29,6 @@ public class DatePickerFragment extends DialogFragment {
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-
         // create a Calendar object and use the Date to configure
         // the Calendar.Then initialize the DatePicker.
         Date date = (Date) getArguments().getSerializable(ARG_DATE);
@@ -40,7 +39,7 @@ public class DatePickerFragment extends DialogFragment {
         int month = calendar.get(Calendar.MONTH);
         int day = calendar.get(Calendar.DAY_OF_MONTH);
 
-        View v =inflater.inflate(R.layout.dialog_date,container,false);
+        View v = inflater.inflate(R.layout.dialog_date, container, false);
         mDatePicker = (DatePicker) v.findViewById(R.id.dialog_date_date_picker);
         mDatePicker.init(year, month, day, null);
         //Add a ok button for the date picker
@@ -61,11 +60,8 @@ public class DatePickerFragment extends DialogFragment {
                 }
             }
         });
-
         return v;
     }
-
-
 
     //Create an intent,puts the date on it as an extra,
     // and then calls CrimeFragment.onActivityResult()
@@ -94,5 +90,4 @@ public class DatePickerFragment extends DialogFragment {
         fragment.setArguments(args);
         return fragment;
     }
-
 }
